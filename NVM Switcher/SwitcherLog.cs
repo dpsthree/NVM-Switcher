@@ -2,19 +2,17 @@ using System.Text.RegularExpressions;
 
 namespace NVM_Switcher
 {
-    public partial class Form1 : Form
+    public partial class SwitcherLog : Form
     {
         private string[] versions;
         private ContextMenuStrip cms;
 
-        public Form1()
+        public SwitcherLog()
         {
             InitializeComponent();
         }
 
-        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e) { }
-
-        private void Form1_Load(object sender, EventArgs e)
+        private void SwitcherLogLoad(object sender, EventArgs e)
         {
             createNotifyIcon();
             setupNVMList();
@@ -58,19 +56,33 @@ namespace NVM_Switcher
             proc.RedirectStandardOutput = true;
             var process = System.Diagnostics.Process.Start(proc);
             string q = process.StandardOutput.ReadToEnd();
-            textBox1.Text = q;
+            logEntries.AppendText(
+                DateTime.Now.ToString(System.Globalization.CultureInfo.InvariantCulture) + " - "
+            );
+            logEntries.AppendText(q);
+            logEntries.AppendText(Environment.NewLine);
         }
 
         private void createNotifyIcon()
         {
             cms = new System.Windows.Forms.ContextMenuStrip();
-            notifyIcon1.ContextMenuStrip = cms;
-            notifyIcon1.BalloonTipIcon = ToolTipIcon.Info;
-            notifyIcon1.BalloonTipText = "Welcome to TutorialsPanel.com!!";
-            notifyIcon1.BalloonTipTitle = "Welcome Message";
-            notifyIcon1.ShowBalloonTip(2000);
+            notificationIcon.ContextMenuStrip = cms;
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e) { }
+        private void notificationIcon_DoubleClick(object sender, EventArgs e)
+        {
+            Show();
+        }
+
+        private void SwitcherLog_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Hide();
+            e.Cancel = true;
+        }
+
+        private void SwitcherLog_Shown(object sender, EventArgs e)
+        {
+            Hide();
+        }
     }
 }
